@@ -1,0 +1,104 @@
+{% block content %}
+<h2>Управление пользователями и постами</h2>
+
+<h3>Пользователи</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя пользователя</th>
+            <th>Email</th>
+            <th>Редактировать пользователя</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <form method="post" action="/users/edit/{{ user.id }}" style="display:inline;">
+                    <input type="text" name="username" value="{{ user.username }}" required>
+                    <input type="email" name="email" value="{{ user.email }}" required>
+                    <button type="submit">Сохранить</button>
+                </form>
+                |
+                <a href="/users/delete/{{ user.id }}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h3>Добавить нового пользователя</h3>
+<form method="post" action="/users/create">
+    <label>Имя пользователя:</label>
+    <input type="text" name="username" required>
+    <br>
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <br>
+    <label>Пароль:</label>
+    <input type="password" name="password" required>
+    <br>
+    <button type="submit">Добавить пользователя</button>
+</form>
+
+<hr>
+
+
+<h3>Посты</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Заголовок</th>
+            <th>Содержание</th>
+            <th>Автор</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.id }}</td>
+            <td>
+                <form method="post" action="/posts/edit/{{ post.id }}" style="display:inline;">
+                    <input type="text" name="title" value="{{ post.title }}" required>
+            </td>
+            <td>
+                    <textarea name="content" required>{{ post.content }}</textarea>
+                    <button type="submit">Сохранить</button>
+                </form>
+            </td>
+            <td>{{ post.user.username if post.user else "Неизвестно" }}</td>
+            <td>
+                <a href="/posts/delete/{{ post.id }}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<h3>Добавить новый пост</h3>
+<form method="post" action="/posts/create">
+    <label>Заголовок:</label>
+    <input type="text" name="title" required>
+    <br>
+    <label>Содержание:</label>
+    <textarea name="content" required></textarea>
+    <br>
+    <label>Автор:</label>
+    <select name="user_id" required>
+        {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit">Добавить пост</button>
+</form>
+
+{% endblock %}
